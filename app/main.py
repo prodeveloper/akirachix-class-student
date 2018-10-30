@@ -48,5 +48,21 @@ def students_registered_class(classes):
     return jsonify(results)
 
 
+@app.route('/students/registered/<email>')
+def classes_student_registered(email):
+    student_id = Student.select().where(Student.email**email).get().id
+    student_classes = Studentclass.select().where(Studentclass.student_id == student_id)
+    results = []
+    for student_class in student_classes:
+        cls_result = Classes.select().where(Classes.id == student_class.classes_id).get()
+        results.append(
+            {
+                'title': cls_result.title,
+                'description': cls_result.description
+            }
+        )
+    return jsonify(results)
+
+
 if __name__ == '__main__':
     app.run(**app_start_config)
